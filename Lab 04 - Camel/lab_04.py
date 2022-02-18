@@ -82,10 +82,10 @@ def main():
                 print("The natives have captured you.")
                 done = True
 
-            if nativesbehind > 15:
+            if nativesbehind >= 15:
                 print("The natives are getting close!")
 
-            if milesTraveled >= 200:
+            if milesTraveled >= 200 and not done:
                 print("Congrats you have won the game!!!")
                 done = True
 
