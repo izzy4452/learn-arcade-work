@@ -24,6 +24,7 @@ def main():
 
         #Quit Game
         if not done:
+            nativesbehind = milesTraveled - nativesTravel
             fullspeed = random.randrange(10, 21)
             moderatespeed = random.randrange(5, 12)
             user_choice = input("What is your Choice? ")
@@ -36,7 +37,7 @@ def main():
                 print("Thirst:", Thirst)
                 print("Drink in Canteen:", Drinkcanteen)
                 print("Your camel futigness is:", camelFatigue)
-                print("The natives are", nativesTravel, "miles behind you!")
+                print("The natives are", nativesbehind, "miles behind you!")
 
             #rest
             elif user_choice.upper() == "D":
@@ -81,7 +82,7 @@ def main():
                 print("The natives have captured you.")
                 done = True
 
-            if nativesTravel < 15:
+            if nativesbehind > 15:
                 print("The natives are getting close!")
 
             if milesTraveled >= 200:
