@@ -79,6 +79,8 @@ def main():
             if next_room == 0:
                 print("You can't go that way.")
 
+        if
+
 
 
 
