@@ -143,6 +143,9 @@ class MyGame(arcade.Window):
         elif key == arcade.key.DOWN:
             self.ball.change_y = -MOVEMENT_SPEED
 
+        if not self.explosion_sound_player or not self.explosion_sound_player.playing:
+            self.explosion_sound_player = arcade.play_sound(self.explosion_sound)
+
 
     def on_key_release(self, key, modifiers):
         """ Called when user releases key"""
