@@ -17,8 +17,6 @@ class Ball:
         self.radius = radius
         self.color = color
 
-        #self.laser_sound = arcade.load_sound("laser.wav")
-
     def draw(self):
         arcade.draw_circle_filled(self.position_x,
                                   self.position_y,
@@ -46,8 +44,8 @@ class Ball:
         if self.position_x < self.radius:
             self.position_x = self.radius
 
-        #if self.position_x > self.laser_sound - self.radius:
-            #self.position_x = self.laser_sound - self.radius
+        #if self.position_x > self.hit_sound - self.radius:
+            #self.position_x = self.hit_sound - self.radius
 
 class Square:
     def __init__(self, position_x, position_y, change_x, change_y, width, height, color):
@@ -67,10 +65,34 @@ class Square:
                                      self.color)
 
     def update(self):
+
         self.position_y += self.change_y
         self.position_x += self.change_x
 
+        # See if the ball hits the edge of the screen
+        if self.position_x < self.width:
+            self.position_x = self.width
 
+        if self.position_x > SCREEN_WIDTH - self.width:
+            self.position_x = SCREEN_WIDTH - self.width
+
+        if self.position_y < self.width:
+            self.position_y = self.width
+
+        if self.position_y > SCREEN_HEIGHT - self.width:
+            self.position_y = SCREEN_HEIGHT - self.width
+
+        if self.position_x < self.height:
+            self.position_x = self.height
+
+        if self.position_x > SCREEN_WIDTH - self.height:
+            self.position_x = SCREEN_WIDTH - self.height
+
+        if self.position_y < self.height:
+            self.position_y = self.height
+
+        if self.position_y > SCREEN_HEIGHT - self.height:
+            self.position_y = SCREEN_HEIGHT - self.height
 
 class MyGame(arcade.Window):
     """ Our Custom Window Class"""
@@ -80,6 +102,9 @@ class MyGame(arcade.Window):
 
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Lab 7 - User Control")
+
+        self.explosion_sound = arcade.load_sound(":resources:sounds/explosion1.wav")
+        self.explosion_sound_player = None
 
         self.set_mouse_visible(False)
 
@@ -102,6 +127,7 @@ class MyGame(arcade.Window):
         self.square.draw()
 
     def update(self, delta_time):
+
         self.ball.update()
 
         self.square.update()
@@ -117,6 +143,7 @@ class MyGame(arcade.Window):
         elif key == arcade.key.DOWN:
             self.ball.change_y = -MOVEMENT_SPEED
 
+
     def on_key_release(self, key, modifiers):
         """ Called when user releases key"""
         if key == arcade.key.LEFT or key == arcade.key.RIGHT:
@@ -129,6 +156,10 @@ class MyGame(arcade.Window):
         Happens approximately 60 times per second."""
         self.square.position_x = x
         self.square.position_y = y
+
+        if not self.explosion_sound_player or not self.explosion_sound_player.playing:
+            self.explosion_sound_player = arcade.play_sound(self.explosion_sound)
+
 
 def main():
     window = MyGame()
