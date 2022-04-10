@@ -4,6 +4,7 @@ import arcade
 import random
 
 # --- Constants ---
+SPRITE_SIZE = 0.3
 SPRITE_SCALING_BOX = 0.5
 SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_GEM = 0.5
@@ -13,7 +14,6 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 MOVEMENT_SPEED = 5
-
 
 class MyGame(arcade.Window):
     """ This class represents the main window of the game. """
@@ -57,57 +57,114 @@ class MyGame(arcade.Window):
         # Create the player
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
-        self.player_sprite.center_y = 64
+        self.player_sprite.center_y = 90
         self.player_list.append(self.player_sprite)
 
 
-        # Create the coins
-        for i in range(GEM_COUNT):
-
-            # Create the coin instance
-            # Coin image from kenney.nl
-            gem = arcade.Sprite(":resources:images/items/gemRed.png", SPRITE_SCALING_GEM)
-
-            # Position the coin
-            gem.center_x = random.randrange(SCREEN_WIDTH)
-            gem.center_y = random.randrange(SCREEN_HEIGHT)
-
-            # Add the coin to the lists
-            self.gem_list.append(gem)
-
         # --- Manually place walls
 
-        # Manually create and position a box at 300, 200
-        wall = arcade.Sprite(":resources:images/tiles/grass.png", SPRITE_SCALING_BOX)
-        wall.center_x = 300
-        wall.center_y = 200
+        wall = arcade.Sprite(":resources:images/tiles/stoneHalf_mid.png", SPRITE_SCALING_BOX)
+        wall.center_x = 0
+        wall.center_y = 50
         self.wall_list.append(wall)
 
-        # Manually create and position a box at 364, 200
-        wall = arcade.Sprite(":resources:images/tiles/grass.png", SPRITE_SCALING_BOX)
-        wall.center_x = 364
-        wall.center_y = 200
+        wall = arcade.Sprite(":resources:images/tiles/stoneHalf_right.png", SPRITE_SCALING_BOX)
+        wall.center_x = 50
+        wall.center_y = 50
         self.wall_list.append(wall)
 
+        wall = arcade.Sprite(":resources:images/tiles/stoneHalf_left.png", SPRITE_SCALING_BOX)
+        wall.center_x = 775
+        wall.center_y = 175
+        self.wall_list.append(wall)
+
+        wall = arcade.Sprite(":resources:images/tiles/brickTextureWhite.png")
+        wall.center_x = 500
+        wall.center_y = -5
+        self.wall_list.append(wall)
         # --- Place boxes inside a loop
-        for x in range(173, 650, 64):
-            wall = arcade.Sprite(":resources:images/tiles/grass.png", SPRITE_SCALING_BOX)
+        for x in range(173, 700, 64):
+            wall = arcade.Sprite(":resources:images/tiles/grassHalf_mid.png", SPRITE_SCALING_BOX)
             wall.center_x = x
-            wall.center_y = 350
+            wall.center_y = 50
+            self.wall_list.append(wall)
+
+        for x in range(0, 650, 64):
+            wall = arcade.Sprite(":resources:images/tiles/grassHalf_mid.png", SPRITE_SCALING_BOX)
+            wall.center_x = x
+            wall.center_y = 175
+            self.wall_list.append(wall)
+
+        for x in range(0, 500, 64):
+            wall = arcade.Sprite(":resources:images/tiles/grassHalf_mid.png", SPRITE_SCALING_BOX)
+            wall.center_x = x
+            wall.center_y = 300
+            self.wall_list.append(wall)
+
+        for x in range(0, 550, 64):
+            wall = arcade.Sprite(":resources:images/tiles/grassHalf_mid.png", SPRITE_SCALING_BOX)
+            wall.center_x = 600
+            wall.center_y = 300
             self.wall_list.append(wall)
 
         # --- Place walls with a list
-        coordinate_list = [[400, 500],
-                           [470, 500],
-                           [400, 570],
-                           [470, 570]]
+        coordinate_list = [[400, 400],
+                           [470, 400],
+                           [540, 400],
+                           [470, 470]]
 
         # Loop through coordinates
         for coordinate in coordinate_list:
-            wall = arcade.Sprite(":resources:images/tiles/grass.png", SPRITE_SCALING_BOX)
+            wall = arcade.Sprite(":resources:images/tiles/grassHalf_mid.png", SPRITE_SCALING_BOX)
             wall.center_x = coordinate[0]
             wall.center_y = coordinate[1]
             self.wall_list.append(wall)
+
+        # Create a series of horizontal walls
+        for y in (-100, SCREEN_HEIGHT - SPRITE_SIZE):
+            for x in range(0, SCREEN_WIDTH):
+                wall = arcade.Sprite(":resources:images/tiles/stoneCenter_rounded.png", SPRITE_SCALING_BOX)
+                wall.center_x = x
+                wall.center_y = y
+                self.wall_list.append(wall)
+
+        for x in (-100, SCREEN_WIDTH - SPRITE_SIZE):
+            for y in range(-100, SCREEN_HEIGHT):
+                wall = arcade.Sprite(":resources:images/tiles/stoneCenter_rounded.png", SPRITE_SCALING_BOX)
+                wall.left = x
+                wall.bottom = y
+                self.wall_list.append(wall)
+
+                # Create the coins
+            for i in range(GEM_COUNT):
+
+                # Create the gems
+                gem = arcade.Sprite(":resources:images/items/gemRed.png", SPRITE_SCALING_GEM)
+
+                # Position the gem
+                gem.center_x = random.randrange(SCREEN_WIDTH)
+                gem.center_y = random.randrange(SCREEN_HEIGHT)
+
+                gem_placed_successfully = False
+
+                # Keep trying until success
+                while not gem_placed_successfully:
+                    # Position the coin
+                    gem.center_x = random.randrange(SCREEN_WIDTH)
+                    gem.center_y = random.randrange(SCREEN_HEIGHT)
+
+                    # See if the coin is hitting a wall
+                    wall_hit_list = arcade.check_for_collision_with_list(gem, self.wall_list)
+
+                    # See if the coin is hitting another coin
+                    gem_hit_list = arcade.check_for_collision_with_list(gem, self.gem_list)
+
+                    if len(wall_hit_list) == 0 and len(gem_hit_list) == 0:
+                        # It is!
+                        gem_placed_successfully = True
+
+                # Add the coin to the lists
+                self.gem_list.append(gem)
 
         # Create the physics engine. Give it a reference to the player, and
         # the walls we can't run into.
@@ -128,25 +185,36 @@ class MyGame(arcade.Window):
         self.camera_for_gui.use()
         arcade.draw_text(f"Score: {self.score}", 10, 10, arcade.color.WHITE, 24)
 
-    #def on_update(self, delta_time):
+    def on_update(self, delta_time):
         """ Movement and game logic """
 
-        # Call update on all sprites (The sprites don't do much in this
-        # example though.)
-        #self.physics_engine.update()
+        # Call update on all sprites
+        self.physics_engine.update()
 
         # Scroll the screen to the player
         #self.scroll_to_player()
 
         # Scroll the window to the player.
-        #CAMERA_SPEED = 1
-        #lower_left_corner = (self.player_sprite.center_x - self.width / 2,
-                             #self.player_sprite.center_y - self.height / 2)
-        #self.camera_for_sprites.move_to(lower_left_corner, CAMERA_SPEED)
+        CAMERA_SPEED = 1
+        lower_left_corner = (self.player_sprite.center_x - self.width / 2,
+                             self.player_sprite.center_y - self.height / 2)
+        self.camera_for_sprites.move_to(lower_left_corner, CAMERA_SPEED)
 
+
+        # Call update on all sprites
+        self.gem_list.update()
+
+        # Generate a list of all sprites that collided with the player.
+        gems_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
+                                                             self.gem_list)
+
+        # Loop through each colliding sprite, remove it, and add to the score.
+        for gem in gems_hit_list:
+            gem.remove_from_sprite_lists()
+            self.score += 1
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
 
         if key == arcade.key.UP:
             self.player_sprite.change_y = MOVEMENT_SPEED
