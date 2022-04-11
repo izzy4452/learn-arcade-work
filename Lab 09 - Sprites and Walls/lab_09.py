@@ -1,5 +1,3 @@
-""" Sprite Sample Program """
-
 import arcade
 import random
 
@@ -21,7 +19,7 @@ class MyGame(arcade.Window):
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprite Example")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprite and Walls")
 
         # Sprite lists
         self.player_list = None
@@ -31,19 +29,18 @@ class MyGame(arcade.Window):
         # Set up the player
         self.player_sprite = None
 
-        # This variable holds our simple "physics engine"
+        #physics engine variable
         self.physics_engine = None
 
         self.set_mouse_visible(False)
 
-        # Create the cameras. One for the GUI, one for the sprites.
-        # We scroll the 'sprite world' but not the GUI.
+        # One GUI camera and one sprite
         self.camera_for_sprites = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.camera_for_gui = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
 
     def setup(self):
 
-        # Set the background color
+        # Background color
         arcade.set_background_color(arcade.color.SKY_BLUE)
 
         # Sprite lists
@@ -62,7 +59,6 @@ class MyGame(arcade.Window):
 
 
         # --- Manually place walls
-
         wall = arcade.Sprite(":resources:images/tiles/stoneHalf_mid.png", SPRITE_SCALING_BOX)
         wall.center_x = 0
         wall.center_y = 50
@@ -82,7 +78,8 @@ class MyGame(arcade.Window):
         wall.center_x = 500
         wall.center_y = -5
         self.wall_list.append(wall)
-        # --- Place boxes inside a loop
+
+        # --- Boxes inside a loop
         for x in range(173, 700, 64):
             wall = arcade.Sprite(":resources:images/tiles/grassHalf_mid.png", SPRITE_SCALING_BOX)
             wall.center_x = x
@@ -107,7 +104,7 @@ class MyGame(arcade.Window):
             wall.center_y = 300
             self.wall_list.append(wall)
 
-        # --- Place walls with a list
+        # --- Walls with a list
         coordinate_list = [[400, 400],
                            [470, 400],
                            [540, 400],
@@ -120,7 +117,7 @@ class MyGame(arcade.Window):
             wall.center_y = coordinate[1]
             self.wall_list.append(wall)
 
-        # Create a series of horizontal walls
+        # horizontal walls
         for y in (-100, SCREEN_HEIGHT - SPRITE_SIZE):
             for x in range(0, SCREEN_WIDTH):
                 wall = arcade.Sprite(":resources:images/tiles/stoneCenter_rounded.png", SPRITE_SCALING_BOX)
@@ -128,6 +125,7 @@ class MyGame(arcade.Window):
                 wall.center_y = y
                 self.wall_list.append(wall)
 
+        #vertical walls
         for x in (-100, SCREEN_WIDTH - SPRITE_SIZE):
             for y in range(-100, SCREEN_HEIGHT):
                 wall = arcade.Sprite(":resources:images/tiles/stoneCenter_rounded.png", SPRITE_SCALING_BOX)
@@ -135,21 +133,18 @@ class MyGame(arcade.Window):
                 wall.bottom = y
                 self.wall_list.append(wall)
 
-                # Create the coins
+            #create gems
             for i in range(GEM_COUNT):
 
-                # Create the gems
                 gem = arcade.Sprite(":resources:images/items/gemRed.png", SPRITE_SCALING_GEM)
 
-                # Position the gem
                 gem.center_x = random.randrange(SCREEN_WIDTH)
                 gem.center_y = random.randrange(SCREEN_HEIGHT)
 
                 gem_placed_successfully = False
 
-                # Keep trying until success
                 while not gem_placed_successfully:
-                    # Position the coin
+
                     gem.center_x = random.randrange(SCREEN_WIDTH)
                     gem.center_y = random.randrange(SCREEN_HEIGHT)
 
@@ -160,20 +155,16 @@ class MyGame(arcade.Window):
                     gem_hit_list = arcade.check_for_collision_with_list(gem, self.gem_list)
 
                     if len(wall_hit_list) == 0 and len(gem_hit_list) == 0:
-                        # It is!
+
                         gem_placed_successfully = True
 
-                # Add the coin to the lists
                 self.gem_list.append(gem)
 
-        # Create the physics engine. Give it a reference to the player, and
-        # the walls we can't run into.
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
     def on_draw(self):
         arcade.start_render()
 
-        # Select the scrolled camera for our sprites
         self.camera_for_sprites.use()
 
         # Draw the sprites
@@ -181,7 +172,6 @@ class MyGame(arcade.Window):
         self.player_list.draw()
         self.gem_list.draw()
 
-        # Select the (unscrolled) camera for our GUI
         self.camera_for_gui.use()
         arcade.draw_text(f"Score: {self.score}", 10, 10, arcade.color.WHITE, 24)
 
@@ -204,11 +194,10 @@ class MyGame(arcade.Window):
         # Call update on all sprites
         self.gem_list.update()
 
-        # Generate a list of all sprites that collided with the player.
+        # list of all sprites that collided with the player.
         gems_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
                                                              self.gem_list)
 
-        # Loop through each colliding sprite, remove it, and add to the score.
         for gem in gems_hit_list:
             gem.remove_from_sprite_lists()
             self.score += 1
