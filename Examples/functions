@@ -1,0 +1,78 @@
+
+#start with def: starts with a lower case letter, after first letter, only use letter, numbers, and undercases,
+#NO SPACES, only underscores
+#functions names are normally all lower-case
+#inside parenthesis goes Paramters
+def print_hello():
+    """This is a comment that describes the function"""
+    print("Hello!")
+
+    # This calls our function twice.
+    print_hello()
+    print_hello()
+
+def print_hello():
+    print("Hello!")
+
+
+def print_goodbye():
+    print("Bye!")
+
+# Here is the main code, after all the function
+# definitions.
+print_hello()
+print_goodbye()
+
+def print_hello():
+    print("Hello!")
+
+
+def print_goodbye():
+    print("Bye!")
+
+
+def main():
+    """ This is my main program function """
+    print_hello()
+    print_goodbye()
+
+
+# Call (run) the main function
+main()
+
+# Only run the main function if we are running this file. Don't run it
+# if we are importing this file.
+if __name__ == "__main__":
+    main()
+
+def print_number(my_number):
+    print(my_number)
+
+
+print_number(55)
+print_number(25)
+print_number(8)
+
+def add_numbers(a, b):
+    print(a + b)
+
+
+add_numbers(11, 7)
+
+# Add two numbers and return the results
+def sum_two_numbers(a, b):
+    result = a + b
+    return result
+
+# Capture the function's result into a variable
+# by putting "my_result =" in front of it.
+# (Use whatever variable name best describes the data,
+# don't blindly use 'my_result' for everything.)
+my_result = sum_two_numbers(22, 15) # <--- This line CAPTURES the return value
+
+# Now that I captured the result, print it.
+print(my_result) # <--- This is printing, NOT capturing.
+
+#stub
+#Tells progam to pass it. later will do something. Help when you want to figure out something later without breaking your code
+pass
