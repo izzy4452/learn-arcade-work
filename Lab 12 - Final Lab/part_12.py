@@ -36,12 +36,12 @@ LAYER_NAME_FOREGROUND = "Foreground"
 LAYER_NAME_BACKGROUND = "Background"
 LAYER_NAME_DONT_TOUCH = "Don't Touch"
 LAYER_NAME_PLAYER = "Player"
-LAYER_NAME_ENEMIES = "Enemies"
 
 def load_texture_pair(filename):
     """
     Load a texture pair, with the second being a mirror image.
     """
+
     return [
         arcade.load_texture(filename),
         arcade.load_texture(filename, flipped_horizontally=True),
@@ -51,7 +51,7 @@ class Entity(arcade.Sprite):
     def __init__(self, name_folder, name_file):
         super().__init__()
 
-        # Default to facing right
+        #facing right
         self.facing_direction = RIGHT_FACING
 
         # Used for image sequences
@@ -81,24 +81,7 @@ class Entity(arcade.Sprite):
         # Set the initial texture
         self.texture = self.idle_texture_pair[0]
 
-        # Hit box will be set based on the first image used. If you want to specify
-        # a different hit box, you can do it like the code below.
-        # set_hit_box = [[-22, -64], [22, -64], [22, 28], [-22, 28]]
         self.hit_box = self.texture.hit_box_points
-
-class Enemy(Entity):
-    def __init__(self, name_folder, name_file):
-
-        # Setup parent class
-        super().__init__(name_folder, name_file)
-
-
-class RobotEnemy(Enemy):
-    def __init__(self):
-
-        # Set up parent class
-        super().__init__("Enemies", "slimePurple")
-
 
 class PlayerCharacter(Entity):
     """Player Sprite"""
@@ -194,10 +177,10 @@ class MyGame(arcade.Window):
         self.scene = arcade.Scene()
 
         # Set up the Camera
-        self.camera = arcade.Camera(self.width, self.height)
-        self.gui_camera = arcade.Camera(self.width, self.height)
+        self.camera = arcade.Camera()
+        self.gui_camera = arcade.Camera()
 
-        map_name = f"level1.json"
+        map_name = "level1.json"
 
         layer_options = {
             LAYER_NAME_PLATFORMS: {
@@ -238,30 +221,6 @@ class MyGame(arcade.Window):
 
         self.end_of_map = self.tile_map.width * GRID_PIXEL_SIZE
 
-        enemies_layer = self.tile_map.object_lists[LAYER_NAME_ENEMIES]
-
-        for my_object in enemies_layer:
-            cartesian = self.tile_map.get_cartesian(
-                my_object.shape[0], my_object.shape[1]
-            )
-            enemy_type = my_object.properties["type"]
-            if enemy_type == "slimePurple":
-                enemy = RobotEnemy()
-            enemy.center_x = math.floor(
-                cartesian[0] * TILE_SCALING * self.tile_map.tile_width
-            )
-            enemy.center_y = math.floor(
-                (cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING)
-            )
-            if "boundary_left" in my_object.properties:
-                enemy.boundary_left = my_object.properties["boundary_left"]
-            if "boundary_right" in my_object.properties:
-                enemy.boundary_right = my_object.properties["boundary_right"]
-            if "change_x" in my_object.properties:
-                enemy.change_x = my_object.properties["change_x"]
-            self.scene.add_sprite(LAYER_NAME_ENEMIES, enemy)
-
-
         if self.tile_map.background_color:
             arcade.set_background_color(self.tile_map.background_color)
 
@@ -270,7 +229,7 @@ class MyGame(arcade.Window):
             gravity_constant=GRAVITY,
             walls=self.scene[LAYER_NAME_PLATFORMS],
             platforms=self.scene[LAYER_NAME_MOVING_PLATFORMS],
-            ladders=self.scene[LAYER_NAME_LADDERS]
+            ladders=self.scene[LAYER_NAME_LADDERS],
         )
     def on_draw(self):
         """Render the screen."""
@@ -423,9 +382,17 @@ class MyGame(arcade.Window):
             [
                 LAYER_NAME_COINS,
                 LAYER_NAME_PLAYER,
-                LAYER_NAME_ENEMIES,
             ],
         )
+
+
+        self.scene.update([LAYER_NAME_MOVING_PLATFORMS])
+
+        if self.player_sprite.center_x >= self.end_of_map:
+            self.level += 1
+
+            # Load the next level
+            self.setup()
 
         #Camera Position
         self.center_camera_to_player()
