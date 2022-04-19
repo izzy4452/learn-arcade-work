@@ -7,7 +7,7 @@ import math
 #constant
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
-SCREEN_TITLE = "Alien Jump"
+SCREEN_TITLE = "Action Jump"
 
 
 CHARACTER_SCALING = 0.55
@@ -164,9 +164,9 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Load sounds
-        self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
-        self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
-        self.game_over = arcade.load_sound(":resources:sounds/gameover1.wav")
+        self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin4.wav")
+        self.jump_sound = arcade.load_sound(":resources:sounds/jump3.wav")
+        self.game_over = arcade.load_sound(":resources:sounds/gameover4.wav")
 
 
         arcade.set_background_color(arcade.csscolor.SKY_BLUE)
